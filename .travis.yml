@@ -1,2 +1,17 @@
 language: csharp
+mono:
+  - latest
+env: VERSION=0.3.10
 solution: SecureCameraCaptureClient.sln
+addons:
+  postgresql: "9.4"
+
+before_script:
+ - chmod +x ./scripts/build.sh ./scripts/run-tests.sh
+ 
+script:
+  - ./scripts/build.sh
+  - ./scripts/run-tests.sh
+
+after_failure:
+  - ls 

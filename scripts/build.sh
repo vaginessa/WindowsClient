@@ -1,0 +1,1 @@
+xbuild /p:Configuration=Release SecureCameraCaptureClient.sln /p:TargetFrameworkVersion="v4.5" /p:DebugSymbols=False
