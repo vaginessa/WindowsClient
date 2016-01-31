@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.Serialization.Json;
 
 namespace Secure_Camera_Capture_Client
 {
@@ -14,6 +8,11 @@ namespace Secure_Camera_Capture_Client
     {
         public Form1()
         {
+            //DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
+            //jsonSerializer.ReadObject(response.GetResponseStream());
+
+            JSONParser jsp = new JSONParser("");
+
             InitializeComponent();
 
             treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
@@ -26,27 +25,17 @@ namespace Secure_Camera_Capture_Client
             if ((e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected)
             {
                 Graphics g = e.Graphics;
-                // get node font and node fore color
-                Font nodeFont = GetTreeNodeFont(e.Node);
-                Color nodeForeColor = GetTreeNodeForeColor(e.Node, e.State);
+                System.Drawing.Font treeFont = new System.Drawing.Font("Gill Sans MT", 14.0F, FontStyle.Regular);
+                Color nodeForeColor = Color.FromArgb(49, 49, 49);//GetTreeNodeForeColor(e.Node, e.State);
 
                 // fill node background
-                using (SolidBrush brush = new SolidBrush(Color.White))
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(105, 105, 105)))
                 {
                     e.Graphics.FillRectangle(brush, e.Bounds);
                 }
 
                 // draw node text
-                TextRenderer.DrawText(e.Graphics, e.Node.Text, nodeFont, e.Bounds, nodeForeColor, TextFormatFlags.Left | TextFormatFlags.Top);
-
-                using (Pen pen = new Pen(nodeForeColor))
-                {
-                    pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                    Rectangle penBounds = e.Bounds;
-                    penBounds.Width -= 1;
-                    penBounds.Height -= 1;
-                    e.Graphics.DrawRectangle(pen, penBounds);
-                }
+                TextRenderer.DrawText(e.Graphics, e.Node.Text, treeFont, e.Bounds, nodeForeColor, TextFormatFlags.HorizontalCenter | TextFormatFlags.Top);
             }
             else
             {

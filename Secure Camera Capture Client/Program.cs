@@ -15,7 +15,7 @@ namespace Secure_Camera_Capture_Client
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetCompatibleTextRenderingDefault(true);
             Application.Run(new Form1());
         }
     }
