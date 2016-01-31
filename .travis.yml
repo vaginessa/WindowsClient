@@ -15,3 +15,6 @@ script:
 
 after_failure:
   - ls 
+  
+notifications:
+  slack: senior2:fJNOOHQQEsTdmB8kR76ApU8y
