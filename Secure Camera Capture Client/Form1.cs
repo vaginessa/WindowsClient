@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Runtime.Serialization.Json;
 
 namespace Secure_Camera_Capture_Client
 {
