@@ -42,11 +42,13 @@ namespace Secure_Camera_Capture_Client
                 //Create Object
                 jO.year.Add(new JsonObject.Year(Convert.ToInt32(year)));
                 yearLevel++;
+                //Get the month
+                currentPosInString += 3; stringLeftToIndex -= 3;
+                //Reset the month level
+                monthLevel = -1;
 
                 while (stringLeftToIndex > 0)
                 {
-                    //Get the month
-                    currentPosInString += 3; stringLeftToIndex -= 3;
                     var month = "";
                     var monthBlock = jsonString.Substring(currentPosInString, 10);
                     month = Regex.Match(monthBlock, "\"([^\\)]+)\"").ToString();
@@ -57,11 +59,14 @@ namespace Secure_Camera_Capture_Client
                     //Create Object
                     jO.year.ElementAt(yearLevel).months.Add(new JsonObject.Month(getMonthInt(month)));
                     monthLevel++;
+                    //Get the day
+                    currentPosInString++; stringLeftToIndex--;
+                    //Reset the day level
+                    dayLevel = -1;
 
                     while (stringLeftToIndex > 0)
                     {
-                        //Get the day
-                        currentPosInString += 2; stringLeftToIndex -= 2;
+                        currentPosInString++; stringLeftToIndex--;
                         var day = "";
                         var dayBlock = jsonString.Substring(currentPosInString, 4);
                         day = Regex.Match(dayBlock, "\"([^\\)]+)\"").ToString();
@@ -72,11 +77,13 @@ namespace Secure_Camera_Capture_Client
                         //Create Object
                         jO.year.ElementAt(yearLevel).months.ElementAt(monthLevel).days.Add(new JsonObject.Day(Convert.ToInt16(day)));
                         dayLevel++;
+                        //Get the hour
+                        currentPosInString += 2; stringLeftToIndex -= 2;
+                        //Reset the hour count
+                        hourLevel = -1;
 
                         while ( stringLeftToIndex > 0)
                         {
-                            //Get the hour
-                            currentPosInString += 2; stringLeftToIndex -= 2;
                             var hour = "";
                             var hourBlock = jsonString.Substring(currentPosInString, 4);
                             hour = Regex.Match(hourBlock, "\"([^\\)]+)\"").ToString();
@@ -92,7 +99,8 @@ namespace Secure_Camera_Capture_Client
                             int i = currentPosInString;
                             while(stringLeftToIndex > 0)
                             {
-                                if(jsonString.ElementAt(i) == ']')
+                                Console.WriteLine(jsonString.ElementAt(i));
+                                if (jsonString.ElementAt(i) == ']')
                                 {
                                     break;
                                 }
@@ -104,6 +112,9 @@ namespace Secure_Camera_Capture_Client
                             }
 
                             hourBlock = jsonString.Substring(currentPosInString, hourBlockEnd);
+
+                            //Update indexes
+                            currentPosInString += hourBlockEnd; stringLeftToIndex -= hourBlockEnd;
 
                             //Get the objects in the hour block
                             var imageMatches = Regex.Match(hourBlock, "\\{([^\\}]+)\\}");
@@ -135,7 +146,7 @@ namespace Secure_Camera_Capture_Client
                             //Get more matches
                             string match = imageMatches.NextMatch().ToString();
                             string oldmatch = firstMatch;
-                            while ( match != oldmatch )
+                            while ( match != oldmatch && match != "")
                             {
                                 file_name = Regex.Match(match, "\"file_name\"[ :]+(\"[^\"]*\")").ToString().Substring(13);
                                 date_taken = Regex.Match(match, "\"date_taken\"[ :]+(\"[^\"]*\")").ToString().Substring(14);
@@ -147,16 +158,53 @@ namespace Secure_Camera_Capture_Client
 
                                 minute = date_taken.GetLast(2);
 
+                                Console.WriteLine(file_name);
+                                Console.WriteLine(date_taken);
+                                Console.WriteLine(method);
+                                Console.WriteLine(minute);
+
                                 jO.year.ElementAt(yearLevel).months.ElementAt(monthLevel).days.ElementAt(dayLevel).hours.ElementAt(hourLevel).images.Add(new JsonObject.Image(Convert.ToInt16(minute), file_name, date_taken, getMethodInt(method)));
 
                                 //Update match
                                 oldmatch = match;
                                 match = imageMatches.NextMatch().ToString();
                             }
+                            currentPosInString++;
+                            if (jsonString.ElementAt(currentPosInString) == ',')
+                            {
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                        currentPosInString++;
+                        if (jsonString.ElementAt(currentPosInString) == ',')
+                        {
+                            //currentPosInString++;
+                            continue;
+                        }
+                        else {
                             break;
                         }
-
                     }
+                    currentPosInString++;
+                    if (jsonString.ElementAt(currentPosInString) == ',')
+                    {
+                        currentPosInString++;
+                        continue;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                currentPosInString++;
+                if (jsonString.ElementAt(currentPosInString) == ',')
+                {
+                    currentPosInString+=2;
+                    continue;
+                }
+                else {
+                    break;
                 }
             }            
 
