@@ -9,12 +9,14 @@ namespace Secure_Camera_Capture_Client
 {
     class JSONParser
     {
+        public JsonObject jO;
+
         public JSONParser (String JSONfile)
         {
             string testString = System.IO.File.ReadAllText(@"C:\Users\Nathan\Desktop\testing.json");
             string jsonString = Regex.Replace(testString, @"\s+", "").ToString();
             //New JsonObject
-            JsonObject jO = new JsonObject();
+            jO = new JsonObject();
             //Get id
             jO.id = Regex.Match(testString, "\"id\"[ :]+(\"[^\"]*\")").ToString();
             //Get dateCreated
