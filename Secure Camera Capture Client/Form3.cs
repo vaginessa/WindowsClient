@@ -49,24 +49,34 @@ namespace Secure_Camera_Capture_Client
                 string password = passwordBox.Lines[0];
                 string regNumber = registrationNumberBox.Lines[0];
 
-                
-                if(mainForm.registerAccount(username, password, regNumber))
+                Cursor.Current = Cursors.WaitCursor;
+                this.Enabled = false;
+                if (mainForm.registerAccount(username, password, regNumber))
                 {
                     if(mainForm.login(username, password))
                     {
+                        Cursor.Current = Cursors.Default;
                         mainForm.TopLevel = true;
                         this.Close();
                     }
                     else
                     {
+                        Cursor.Current = Cursors.Default;
                         //Error, loging in the second time
+                        MessageBox.Show("Username or password incorrect", "Login Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.Enabled = true;
                     }
                 }
                 else
                 {
+                    Cursor.Current = Cursors.Default;
                     //Error, registering accound.
                     //How to handle?
                     //TODO
+                    MessageBox.Show("Username or password or registration number incorrect", "Account Creation Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Enabled = true;
                 }
             }
         }

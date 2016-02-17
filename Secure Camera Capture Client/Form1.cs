@@ -37,13 +37,24 @@ namespace Secure_Camera_Capture_Client
         {
             //Start the login in script, getting all the data
             Console.WriteLine("U: " + username + " P: " + password);
-            return true;
+            System.Threading.Thread.Sleep(1500);
+            if ( username == "nathan" && password == "nathan" )
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
         public bool registerAccount(String username, String password, String regNumber)
         {
             Console.WriteLine("U: " + username + " P: " + password + " R: " + regNumber);
-            return true;
+            System.Threading.Thread.Sleep(1500);
+            if (username == "nathan" && password == "nathan" && regNumber == "42")
+            {
+                return true;
+            } else 
+                return false;
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -71,7 +82,7 @@ namespace Secure_Camera_Capture_Client
                 try
                 {
                     string ImagesDirectory =
-                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img");
+                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
                     pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
                     
                 } catch

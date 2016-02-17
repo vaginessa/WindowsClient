@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Reflection;
 
 namespace Secure_Camera_Capture_Client
 {
@@ -13,7 +15,9 @@ namespace Secure_Camera_Capture_Client
 
         public JSONParser (String JSONfile)
         {
-            string testString = System.IO.File.ReadAllText(@"C:\Users\ngoalie\Desktop\testing.json");
+            string directory =
+                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
+            string testString = System.IO.File.ReadAllText(directory + "\\testing.json");
             string jsonString = Regex.Replace(testString, @"\s+", "").ToString();
             //New JsonObject
             jO = new JsonObject();

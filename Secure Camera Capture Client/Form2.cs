@@ -32,15 +32,22 @@ namespace Secure_Camera_Capture_Client
                 string username = userNameBox.Lines[0];
                 string password = passwordBox.Lines[0];
 
-                if( mainForm.login(username, password))
+                Cursor.Current = Cursors.WaitCursor;
+                this.Enabled = false;
+                if ( mainForm.login(username, password))
                 {
 
+                    Cursor.Current = Cursors.Default;
                     mainForm.TopLevel = true;
                     this.Close();
                 } else
                 {
+                    Cursor.Current = Cursors.Default;
                     //Handle the error
                     //TODO
+                    MessageBox.Show("Username or password incorrect", "Login Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Enabled = true;
                 }
 
             }
