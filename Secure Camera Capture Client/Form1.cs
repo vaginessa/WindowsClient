@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Secure_Camera_Capture_Client
@@ -8,6 +11,7 @@ namespace Secure_Camera_Capture_Client
     public partial class Form1 : Form
     {
         private JsonObject jO;
+
         public Form1()
         {
             //DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
@@ -40,6 +44,20 @@ namespace Secure_Camera_Capture_Client
 
                 // draw node text
                 TextRenderer.DrawText(e.Graphics, e.Node.Text, treeFont, e.Bounds, nodeForeColor, TextFormatFlags.HorizontalCenter | TextFormatFlags.Top);
+
+                //Thread out the download of the images.
+                String imageName = (String)e.Node.Tag;
+
+                try
+                {
+                    string ImagesDirectory =
+                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img");
+                    pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+                } catch
+                {
+                    //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+                }
+                
             }
             else
             {
@@ -103,7 +121,8 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
                             List<TreeNode> imageNodeList = new List<TreeNode>();
                             for (int m = 0; m < imageCount; m++)
                             {
-                                TreeNode tn = new TreeNode(hour.images.ElementAt(m).date_taken);
+                                TreeNode tn = new TreeNode(formatDateAndTime(hour.images.ElementAt(m).date_taken));
+                                tn.Tag = hour.images.ElementAt(m).file_name;
                                 imageNodeList.Add(tn);
                             }
                             TreeNode h = new TreeNode(hour.hour.ToString(), imageNodeList.ToArray());
@@ -155,6 +174,22 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
             tv.HideSelection = false;
         }
 
+        public string formatDateAndTime(string timeStamp)
+        {
+            //Example
+            //2016 01    26  01   32
+            //Year Month Day Hour Min
+
+            //TODO An option in settings could be 12/24 time
+            string year = timeStamp.Substring(0,4);
+            string month = timeStamp.Substring(4, 2);
+            string day = timeStamp.Substring(6, 2);
+            string hour = timeStamp.Substring(8, 2);
+            string min = timeStamp.Substring(10, 2);
+
+            return hour + ":" + min + "  " + month + "/" + day + "/" + year;
+        }
+
         public string getMonthString(int month)
         {
             switch (month)
@@ -192,7 +227,7 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         private void pictureBox1_Click(object sender, System.EventArgs e)
         {
             //Generate some dialog about the image?
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            //pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         private void flowLayoutPanel2_Paint(object sender, PaintEventArgs e)

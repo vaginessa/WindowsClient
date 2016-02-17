@@ -36,7 +36,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.centerButton = new System.Windows.Forms.Button();
+            this.downloadButton = new System.Windows.Forms.Button();
             this.leftButton = new System.Windows.Forms.Button();
             this.rightButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
@@ -52,7 +52,7 @@
             this.flowLayoutPanel1.Controls.Add(this.pictureBox1);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 27);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1172, 507);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1184, 537);
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
             // 
@@ -64,14 +64,14 @@
             this.treeView1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(199)))), ((int)(((byte)(199)))));
             this.treeView1.Location = new System.Drawing.Point(3, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(263, 489);
+            this.treeView1.Size = new System.Drawing.Size(287, 534);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // pictureBox1
             // 
             this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
-            this.pictureBox1.Location = new System.Drawing.Point(272, 3);
+            this.pictureBox1.Location = new System.Drawing.Point(296, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(885, 500);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -115,7 +115,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 79F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 326F));
-            this.tableLayoutPanel1.Controls.Add(this.centerButton, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.downloadButton, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.leftButton, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.rightButton, 3, 0);
             this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
@@ -128,17 +128,17 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(900, 28);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
-            // centerButton
+            // downloadButton
             // 
-            this.centerButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.centerButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.centerButton.Location = new System.Drawing.Point(416, 3);
-            this.centerButton.Name = "centerButton";
-            this.centerButton.Size = new System.Drawing.Size(75, 22);
-            this.centerButton.TabIndex = 0;
-            this.centerButton.Text = "Center";
-            this.centerButton.UseVisualStyleBackColor = true;
-            this.centerButton.Click += new System.EventHandler(this.button1_Click);
+            this.downloadButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.downloadButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.downloadButton.Location = new System.Drawing.Point(416, 3);
+            this.downloadButton.Name = "downloadButton";
+            this.downloadButton.Size = new System.Drawing.Size(75, 22);
+            this.downloadButton.TabIndex = 0;
+            this.downloadButton.Text = "Download";
+            this.downloadButton.UseVisualStyleBackColor = true;
+            this.downloadButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // leftButton
             // 
@@ -178,7 +178,7 @@
             this.MinimumSize = new System.Drawing.Size(1200, 605);
             this.Name = "Form1";
             this.Text = "Secure Camera Capture Client";
-            this.TransparencyKey = System.Drawing.Color.Transparent;
+            this.TransparencyKey = System.Drawing.Color.Black;
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
@@ -198,7 +198,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         public System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button centerButton;
+        private System.Windows.Forms.Button downloadButton;
         private System.Windows.Forms.Button leftButton;
         private System.Windows.Forms.Button rightButton;
     }
