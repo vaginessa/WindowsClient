@@ -82,5 +82,9 @@ namespace Secure_Camera_Capture_Client
             this.Close();
             subForm.Show();
         }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            mainForm.Close();
+        }
     }
 }

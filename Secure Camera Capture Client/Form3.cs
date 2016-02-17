@@ -53,7 +53,7 @@ namespace Secure_Camera_Capture_Client
                 this.Enabled = false;
                 if (mainForm.registerAccount(username, password, regNumber))
                 {
-                    if(mainForm.login(username, password))
+                    if (mainForm.login(username, password))
                     {
                         Cursor.Current = Cursors.Default;
                         mainForm.TopLevel = true;
@@ -80,5 +80,9 @@ namespace Secure_Camera_Capture_Client
                 }
             }
         }
-    }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+           mainForm.Close();
+        }
+   }
 }
