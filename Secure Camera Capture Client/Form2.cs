@@ -27,24 +27,23 @@ namespace Secure_Camera_Capture_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            /*if (this.textBox1.Text != string.Empty)
+            if (this.userNameBox.Text != string.Empty && this.passwordBox.Text != string.Empty )
             {
+                string username = userNameBox.Lines[0];
+                string password = passwordBox.Lines[0];
 
-                mainForm.listBox1.Items.Clear();
-
-                string[] stringsEntered = textBox1.Lines;
-
-                for (int count = 0; count < stringsEntered.Length; count++)
+                if( mainForm.login(username, password))
                 {
 
-                    mainForm.listBox1.Items.Add(stringsEntered[count]);
-
+                    mainForm.TopLevel = true;
+                    this.Close();
+                } else
+                {
+                    //Handle the error
+                    //TODO
                 }
 
-            }*/
-
-            mainForm.TopLevel = true;
-            this.Close();
+            }
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
@@ -55,6 +54,26 @@ namespace Secure_Camera_Capture_Client
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form3 subForm = new Form3(mainForm);
+            //Could split this into to if's 
+            //TODO
+            if (this.userNameBox.Text != string.Empty && this.passwordBox.Text != string.Empty)
+            {
+                string username = userNameBox.Lines[0];
+                string password = passwordBox.Lines[0];
+                subForm.inputData(username, password);
+            }
+            this.Close();
+            subForm.Show();
         }
     }
 }

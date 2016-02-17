@@ -31,7 +31,19 @@ namespace Secure_Camera_Capture_Client
             this.TopLevel = false;
             subForm.TopMost = true;
             subForm.Show();
+        }
 
+        public bool login(String username, String password)
+        {
+            //Start the login in script, getting all the data
+            Console.WriteLine("U: " + username + " P: " + password);
+            return true;
+        }
+
+        public bool registerAccount(String username, String password, String regNumber)
+        {
+            Console.WriteLine("U: " + username + " P: " + password + " R: " + regNumber);
+            return true;
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
