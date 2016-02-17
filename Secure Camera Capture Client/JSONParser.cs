@@ -13,7 +13,7 @@ namespace Secure_Camera_Capture_Client
 
         public JSONParser (String JSONfile)
         {
-            string testString = System.IO.File.ReadAllText(@"C:\Users\Nathan\Desktop\testing.json");
+            string testString = System.IO.File.ReadAllText(@"C:\Users\ngoalie\Desktop\testing.json");
             string jsonString = Regex.Replace(testString, @"\s+", "").ToString();
             //New JsonObject
             jO = new JsonObject();
@@ -24,7 +24,7 @@ namespace Secure_Camera_Capture_Client
             var stringLeftToIndex = testString.Length;
             var currentPosInString = 0;
             //Pull off the first characters
-            currentPosInString += jO.id.Length + jO.date_created.Length + 2; //The extra 3 is the :'s and the {
+            currentPosInString += jO.id.Length + jO.date_created.Length + 3; //The extra 3 is the :'s and the {
             stringLeftToIndex -= currentPosInString;
             
             //Set list counters for levels of listing

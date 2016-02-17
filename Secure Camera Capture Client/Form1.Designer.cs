@@ -35,9 +35,14 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.centerButton = new System.Windows.Forms.Button();
+            this.leftButton = new System.Windows.Forms.Button();
+            this.rightButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -47,7 +52,7 @@
             this.flowLayoutPanel1.Controls.Add(this.pictureBox1);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 27);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1066, 470);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1172, 507);
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
             // 
@@ -59,7 +64,7 @@
             this.treeView1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(199)))), ((int)(((byte)(199)))));
             this.treeView1.Location = new System.Drawing.Point(3, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(263, 454);
+            this.treeView1.Size = new System.Drawing.Size(263, 489);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -68,10 +73,11 @@
             this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
             this.pictureBox1.Location = new System.Drawing.Point(272, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(783, 454);
+            this.pictureBox1.Size = new System.Drawing.Size(885, 500);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // menuStrip1
             // 
@@ -81,7 +87,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1067, 27);
+            this.menuStrip1.Size = new System.Drawing.Size(1184, 27);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -101,18 +107,75 @@
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 23);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80.62954F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.37046F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 79F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 326F));
+            this.tableLayoutPanel1.Controls.Add(this.centerButton, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.leftButton, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.rightButton, 3, 0);
+            this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(272, 536);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(900, 28);
+            this.tableLayoutPanel1.TabIndex = 2;
+            // 
+            // centerButton
+            // 
+            this.centerButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.centerButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.centerButton.Location = new System.Drawing.Point(416, 3);
+            this.centerButton.Name = "centerButton";
+            this.centerButton.Size = new System.Drawing.Size(75, 22);
+            this.centerButton.TabIndex = 0;
+            this.centerButton.Text = "Center";
+            this.centerButton.UseVisualStyleBackColor = true;
+            this.centerButton.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // leftButton
+            // 
+            this.leftButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.leftButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.leftButton.Location = new System.Drawing.Point(336, 3);
+            this.leftButton.Name = "leftButton";
+            this.leftButton.Size = new System.Drawing.Size(74, 22);
+            this.leftButton.TabIndex = 1;
+            this.leftButton.Text = "Left";
+            this.leftButton.UseVisualStyleBackColor = true;
+            this.leftButton.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // rightButton
+            // 
+            this.rightButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.rightButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.rightButton.Location = new System.Drawing.Point(497, 3);
+            this.rightButton.Name = "rightButton";
+            this.rightButton.Size = new System.Drawing.Size(73, 22);
+            this.rightButton.TabIndex = 2;
+            this.rightButton.Text = "Right";
+            this.rightButton.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(1067, 496);
+            this.ClientSize = new System.Drawing.Size(1184, 566);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximumSize = new System.Drawing.Size(1083, 535);
-            this.MinimumSize = new System.Drawing.Size(1083, 535);
+            this.MaximumSize = new System.Drawing.Size(1200, 605);
+            this.MinimumSize = new System.Drawing.Size(1200, 605);
             this.Name = "Form1";
             this.Text = "Secure Camera Capture Client";
             this.TransparencyKey = System.Drawing.Color.Transparent;
@@ -120,6 +183,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -133,6 +197,10 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
         public System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button centerButton;
+        private System.Windows.Forms.Button leftButton;
+        private System.Windows.Forms.Button rightButton;
     }
 }
 

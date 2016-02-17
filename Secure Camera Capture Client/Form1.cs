@@ -20,6 +20,7 @@ namespace Secure_Camera_Capture_Client
 
             treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
             treeView1.DrawNode += new DrawTreeNodeEventHandler(treeView1_DrawNode);
+            
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -185,6 +186,27 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
                 default:
                     return "";
             }
+
+        }
+
+        private void pictureBox1_Click(object sender, System.EventArgs e)
+        {
+            //Generate some dialog about the image?
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void flowLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, System.EventArgs e)
+        {
 
         }
     }
