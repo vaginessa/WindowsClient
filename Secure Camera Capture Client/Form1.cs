@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Secure_Camera_Capture_Client
@@ -11,6 +12,7 @@ namespace Secure_Camera_Capture_Client
     public partial class Form1 : Form
     {
         private JsonObject jO;
+        private String currentImageName;
 
         public Form1()
         {
@@ -24,7 +26,12 @@ namespace Secure_Camera_Capture_Client
 
             treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
             treeView1.DrawNode += new DrawTreeNodeEventHandler(treeView1_DrawNode);
-            
+
+            Form2 subForm = new Form2(this);
+            this.TopLevel = false;
+            subForm.TopMost = true;
+            subForm.Show();
+
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -47,12 +54,14 @@ namespace Secure_Camera_Capture_Client
 
                 //Thread out the download of the images.
                 String imageName = (String)e.Node.Tag;
-
+                currentImageName = Regex.Replace(e.Node.Text, @"/", "_").ToString();
+                currentImageName = Regex.Replace(currentImageName, @"\s+", "-").ToString();
                 try
                 {
                     string ImagesDirectory =
                         Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "img");
                     pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+                    
                 } catch
                 {
                     //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
@@ -242,7 +251,23 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
 
         private void button1_Click(object sender, System.EventArgs e)
         {
+            Stream myStream;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
+            saveFileDialog1.Title = "Save Downloaded Image";
+            saveFileDialog1.Filter = "Image files (*.jpg)|*.jpg|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog1.FileName = currentImageName;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if ((myStream = saveFileDialog1.OpenFile()) != null)
+                {
+                    // Code to write the stream goes here.
+                    myStream.Close();
+                }
+            }
         }
     }
 }

@@ -177,6 +177,7 @@
             this.MaximumSize = new System.Drawing.Size(1200, 605);
             this.MinimumSize = new System.Drawing.Size(1200, 605);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Secure Camera Capture Client";
             this.TransparencyKey = System.Drawing.Color.Black;
             this.flowLayoutPanel1.ResumeLayout(false);
