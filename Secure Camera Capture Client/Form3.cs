@@ -13,6 +13,7 @@ namespace Secure_Camera_Capture_Client
     public partial class Form3 : Form
     {
         Form1 mainForm;
+        bool normalClose = false;
 
         public Form3(Form1 mainForm)
         {
@@ -57,6 +58,7 @@ namespace Secure_Camera_Capture_Client
                     {
                         Cursor.Current = Cursors.Default;
                         mainForm.TopLevel = true;
+                        normalClose = true;
                         this.Close();
                     }
                     else
@@ -82,7 +84,7 @@ namespace Secure_Camera_Capture_Client
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-           mainForm.Close();
+           if(!normalClose) mainForm.Close();
         }
    }
 }
