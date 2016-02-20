@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -19,8 +20,8 @@ namespace Secure_Camera_Capture_Client
             //DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
             //jsonSerializer.ReadObject(response.GetResponseStream());
 
-            JSONParser jsp = new JSONParser("");
-            jO = jsp.jO;
+            //JSONParser jsp = new JSONParser("");
+            //jO = jsp.jO;
 
             InitializeComponent();
 
@@ -36,25 +37,49 @@ namespace Secure_Camera_Capture_Client
         public bool login(String username, String password)
         {
             //Start the login in script, getting all the data
-            Console.WriteLine("U: " + username + " P: " + password);
-            System.Threading.Thread.Sleep(1500);
-            if ( username == "nathan" && password == "nathan" )
+            //Console.WriteLine("U: " + username + " P: " + password);
+            //System.Threading.Thread.Sleep(1500);
+
+            string URI = "http://139.78.71.59/login.php";
+            string myParameters = "username=" + username + "&password=" + password;
+
+            using (WebClient wc = new WebClient())
             {
-                return true;
+                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                string HtmlResult = wc.UploadString(URI, myParameters);
+                Console.WriteLine(HtmlResult);
+                if (HtmlResult.Substring(0,1) == "0")
+                {
+                    string jsonString = HtmlResult.Substring(1, HtmlResult.Length-1);
+                    JSONParser jsp = new JSONParser(jsonString);
+                    jO = jsp.jO;
+                    return true;
+                }
+                else
+                    return false;
             }
-            else
-                return false;
         }
 
         public bool registerAccount(String username, String password, String regNumber)
         {
-            Console.WriteLine("U: " + username + " P: " + password + " R: " + regNumber);
-            System.Threading.Thread.Sleep(1500);
-            if (username == "nathan" && password == "nathan" && regNumber == "42")
+            //Console.WriteLine("U: " + username + " P: " + password + " R: " + regNumber);
+            //System.Threading.Thread.Sleep(1500);
+
+            string URI = "http://139.78.71.59/login.php";
+            string myParameters = "username=" + username + "&password=" + password + "&number=" + regNumber;
+
+            using (WebClient wc = new WebClient())
             {
-                return true;
-            } else 
-                return false;
+                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                string HtmlResult = wc.UploadString(URI, myParameters);
+                Console.WriteLine(HtmlResult);
+                if (HtmlResult.Substring(0,1) == "0")
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)

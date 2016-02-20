@@ -52,20 +52,31 @@ namespace Secure_Camera_Capture_Client
 
                 Cursor.Current = Cursors.WaitCursor;
                 this.Enabled = false;
-                if (mainForm.registerAccount(username, password, regNumber))
+                if (mainForm.registerAccount("user", "password", regNumber))
                 {
-                    if (mainForm.login(username, password))
+                    if (mainForm.registerAccount(username, password, regNumber))
                     {
-                        Cursor.Current = Cursors.Default;
-                        mainForm.TopLevel = true;
-                        normalClose = true;
-                        this.Close();
+                        if (mainForm.login(username, password))
+                        {
+                            Cursor.Current = Cursors.Default;
+                            mainForm.TopLevel = true;
+                            normalClose = true;
+                            this.Close();
+                        }
+                        else
+                        {
+                            Cursor.Current = Cursors.Default;
+                            //Error, loging in the second time
+                            MessageBox.Show("Unable to login with new credentials", "Login Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            this.Enabled = true;
+                        }
                     }
                     else
                     {
                         Cursor.Current = Cursors.Default;
                         //Error, loging in the second time
-                        MessageBox.Show("Username or password incorrect", "Login Error",
+                        MessageBox.Show("Unable to create new account", "Account Creation Error",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         this.Enabled = true;
                     }
@@ -76,7 +87,7 @@ namespace Secure_Camera_Capture_Client
                     //Error, registering accound.
                     //How to handle?
                     //TODO
-                    MessageBox.Show("Username or password or registration number incorrect", "Account Creation Error",
+                    MessageBox.Show("Registration number incorrect", "Account Creation Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Enabled = true;
                 }

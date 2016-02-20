@@ -15,22 +15,25 @@ namespace Secure_Camera_Capture_Client
 
         public JSONParser (String JSONfile)
         {
-            string directory =
-                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
-            string testString = System.IO.File.ReadAllText(directory + "\\testing.json");
+            //string directory =
+            //            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
+            //string testString = System.IO.File.ReadAllText(directory + "\\testing.json");
+            string testString = JSONfile;
             string jsonString = Regex.Replace(testString, @"\s+", "").ToString();
             //New JsonObject
             jO = new JsonObject();
             //Get id
-            jO.id = Regex.Match(testString, "\"id\"[ :]+(\"[^\"]*\")").ToString();
+            //jO.id = Regex.Match(testString, "\"id\"[ :]+(\"[^\"]*\")").ToString();
             //Get dateCreated
-            jO.date_created = Regex.Match(testString, "\"date_created\"[ :]+(\"[^\"]*\")").ToString();
+            //jO.date_created = Regex.Match(testString, "\"date_created\"[ :]+(\"[^\"]*\")").ToString();
             var stringLeftToIndex = testString.Length;
             var currentPosInString = 0;
             //Pull off the first characters
-            currentPosInString += jO.id.Length + jO.date_created.Length + 3; //The extra 3 is the :'s and the {
-            stringLeftToIndex -= currentPosInString;
-            
+            //currentPosInString += jO.id.Length + jO.date_created.Length + 3; //The extra 3 is the :'s and the {
+            //stringLeftToIndex -= currentPosInString;
+            currentPosInString += 2;
+            stringLeftToIndex -= 2;
+
             //Set list counters for levels of listing
             int yearLevel  = -1;
             int monthLevel = -1;
@@ -105,7 +108,7 @@ namespace Secure_Camera_Capture_Client
                             int i = currentPosInString;
                             while(stringLeftToIndex > 0)
                             {
-                                Console.WriteLine(jsonString.ElementAt(i));
+                                //Console.WriteLine(jsonString.ElementAt(i));
                                 if (jsonString.ElementAt(i) == ']')
                                 {
                                     break;
@@ -123,7 +126,7 @@ namespace Secure_Camera_Capture_Client
                             currentPosInString += hourBlockEnd; stringLeftToIndex -= hourBlockEnd;
 
                             //Get the objects in the hour block
-                            var imageMatches = Regex.Match(hourBlock, "\\{([^\\}]+)\\}");
+                            MatchCollection imageMatches = Regex.Matches(hourBlock, "\\{([^\\}]+?)\\}");
 
                             //Get first match
                             string minute = "";
@@ -131,49 +134,25 @@ namespace Secure_Camera_Capture_Client
                             string file_name = "";
                             string method = "";
 
-                            string firstMatch = imageMatches.ToString();
-                            file_name = Regex.Match(firstMatch, "\"file_name\"[ :]+(\"[^\"]*\")").ToString().Substring(13);
-                            date_taken = Regex.Match(firstMatch, "\"date_taken\"[ :]+(\"[^\"]*\")").ToString().Substring(14);
-                            method = Regex.Match(firstMatch, "\"method\"[ :]+(\"[^\"]*\")").ToString().Substring(10);
+                            foreach (Match match1 in imageMatches)
+                            {   
+                                try
+                                {
+                                    string match = match1.ToString();
+                                    file_name = Regex.Match(match, "\"filename\"[ :]+(\"[^\"]*\")").ToString().Substring(12);
+                                    date_taken = Regex.Match(match, "\"datetaken\"[ :]+(\"[^\"]*\")").ToString().Substring(13);
+                                    method = Regex.Match(match, "\"bold\"[ :]+(\"[^\"]*\")").ToString().Substring(8);
 
-                            file_name = Regex.Replace(file_name, "\"", "").ToString();
-                            date_taken = Regex.Replace(date_taken, "\"", "").ToString();
-                            method = Regex.Replace(method, "\"", "").ToString();
+                                    file_name = Regex.Replace(file_name, "\"", "").ToString();
+                                    date_taken = Regex.Replace(date_taken, "\"", "").ToString();
+                                    method = Regex.Replace(method, "\"", "").ToString();
 
-                            minute = date_taken.GetLast(2);
+                                    minute = date_taken.GetLast(2);
 
-                            Console.WriteLine(file_name);
-                            Console.WriteLine(date_taken);
-                            Console.WriteLine(method);
-                            Console.WriteLine(minute);
+                                    jO.year.ElementAt(yearLevel).months.ElementAt(monthLevel).days.ElementAt(dayLevel).hours.ElementAt(hourLevel).images.Add(new JsonObject.Image(Convert.ToInt16(minute), file_name, date_taken, getMethodInt(method)));
 
-
-                            jO.year.ElementAt(yearLevel).months.ElementAt(monthLevel).days.ElementAt(dayLevel).hours.ElementAt(hourLevel).images.Add(new JsonObject.Image(Convert.ToInt16(minute), file_name, date_taken, getMethodInt(method)));
-                            //Get more matches
-                            string match = imageMatches.NextMatch().ToString();
-                            string oldmatch = firstMatch;
-                            while ( match != oldmatch && match != "")
-                            {
-                                file_name = Regex.Match(match, "\"file_name\"[ :]+(\"[^\"]*\")").ToString().Substring(13);
-                                date_taken = Regex.Match(match, "\"date_taken\"[ :]+(\"[^\"]*\")").ToString().Substring(14);
-                                method = Regex.Match(match, "\"method\"[ :]+(\"[^\"]*\")").ToString().Substring(10);
-
-                                file_name = Regex.Replace(file_name, "\"", "").ToString();
-                                date_taken = Regex.Replace(date_taken, "\"", "").ToString();
-                                method = Regex.Replace(method, "\"", "").ToString();
-
-                                minute = date_taken.GetLast(2);
-
-                                Console.WriteLine(file_name);
-                                Console.WriteLine(date_taken);
-                                Console.WriteLine(method);
-                                Console.WriteLine(minute);
-
-                                jO.year.ElementAt(yearLevel).months.ElementAt(monthLevel).days.ElementAt(dayLevel).hours.ElementAt(hourLevel).images.Add(new JsonObject.Image(Convert.ToInt16(minute), file_name, date_taken, getMethodInt(method)));
-
-                                //Update match
-                                oldmatch = match;
-                                match = imageMatches.NextMatch().ToString();
+                                }
+                                catch { }
                             }
                             currentPosInString++;
                             if (jsonString.ElementAt(currentPosInString) == ',')
