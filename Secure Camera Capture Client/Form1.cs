@@ -82,6 +82,24 @@ namespace Secure_Camera_Capture_Client
             }
         }
 
+        public Image getPicture(string pictureName)
+        {
+            string URI = "http://139.78.71.59/serve.php";
+            string myParameters = "picture=" + pictureName;
+
+            using (WebClient wc = new WebClient())
+            {
+                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                string HtmlResult = wc.UploadString(URI, myParameters);
+                Console.WriteLine(wc.ResponseHeaders);
+                byte[] tempImg = Convert.FromBase64String(HtmlResult);
+                using (var ms = new MemoryStream(tempImg))
+                {
+                    return Image.FromStream(ms);
+                }
+            }
+        }
+
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
 
@@ -106,15 +124,15 @@ namespace Secure_Camera_Capture_Client
                 currentImageName = Regex.Replace(currentImageName, @"\s+", "-").ToString();
                 try
                 {
-                    string ImagesDirectory =
-                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
-                    pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+                    //string ImagesDirectory =
+                    //    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
+                    //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+                    pictureBox1.Image = getPicture(imageName);
                     
                 } catch
                 {
                     //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
                 }
-                
             }
             else
             {
