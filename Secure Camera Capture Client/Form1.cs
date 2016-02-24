@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Secure_Camera_Capture_Client
@@ -14,6 +15,7 @@ namespace Secure_Camera_Capture_Client
     {
         private JsonObject jO;
         private String currentImageName;
+        private Image GlobalImage;
 
         public Form1()
         {
@@ -39,7 +41,7 @@ namespace Secure_Camera_Capture_Client
             //Start the login in script, getting all the data
             //Console.WriteLine("U: " + username + " P: " + password);
             //System.Threading.Thread.Sleep(1500);
-
+            return true;
             string URI = "http://139.78.71.59/login.php";
             string myParameters = "username=" + username + "&password=" + password;
 
@@ -82,22 +84,43 @@ namespace Secure_Camera_Capture_Client
             }
         }
 
-        public Image getPicture(string pictureName)
+        public void getPicture(string pictureName)
         {
             string URI = "http://139.78.71.59/serve.php";
             string myParameters = "picture=" + pictureName;
-
-            using (WebClient wc = new WebClient())
+            var formTemp = this;
+            Form4 loading = new Form4();
+            Thread pictureThread = new Thread(() =>
             {
-                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                string HtmlResult = wc.UploadString(URI, myParameters);
-                Console.WriteLine(wc.ResponseHeaders);
-                byte[] tempImg = Convert.FromBase64String(HtmlResult);
-                using (var ms = new MemoryStream(tempImg))
+                formTemp.Enabled = false;
+                formTemp.SendToBack();
+                Cursor.Current = Cursors.WaitCursor;
+                loading.Show();                
+                using (WebClient wc = new WebClient())
                 {
-                    return Image.FromStream(ms);
+                    try {
+                        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                        string HtmlResult = wc.UploadString(URI, myParameters);
+                        Console.WriteLine(wc.ResponseHeaders);
+                        byte[] tempImg = Convert.FromBase64String(HtmlResult);
+                        using (var ms = new MemoryStream(tempImg))
+                        {
+                            GlobalImage = Image.FromStream(ms);
+                            formTemp.Enabled = true;
+                            formTemp.BringToFront();
+                            Cursor.Current = Cursors.Default;
+                            loading.Close();
+                        }
+                    } catch (Exception e)
+                    {
+                        formTemp.Enabled = true;
+                        formTemp.BringToFront();
+                        Cursor.Current = Cursors.Default;
+                        loading.Close();
+                    }
                 }
-            }
+            });
+            pictureThread.Start();
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -127,7 +150,10 @@ namespace Secure_Camera_Capture_Client
                     //string ImagesDirectory =
                     //    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
                     //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
-                    pictureBox1.Image = getPicture(imageName);
+                    //Thread thread = new Thread(new ThreadStart(id => getPicture(imageName));
+                    //thread.Start();
+                    GlobalImage = pictureBox1.Image;
+                    getPicture(imageName);
                     
                 } catch
                 {

@@ -45,9 +45,9 @@
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(232, 35);
+            this.label1.Size = new System.Drawing.Size(205, 35);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Login In Credientials";
+            this.label1.Text = "Login Credientials";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1

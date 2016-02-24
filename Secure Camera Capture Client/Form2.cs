@@ -19,7 +19,6 @@ namespace Secure_Camera_Capture_Client
         {
             this.mainForm = mainForm;
             InitializeComponent();
-
         }
         private void label1_Click(object sender, EventArgs e)
         {

@@ -96,6 +96,11 @@ namespace Secure_Camera_Capture_Client
                             var hour = "";
                             var hourBlock = jsonString.Substring(currentPosInString, 4);
                             hour = Regex.Match(hourBlock, "\"([^\\)]+)\"").ToString();
+                            if( hour == "" ) {
+                                currentPosInString++;
+                                hourBlock = jsonString.Substring(currentPosInString, 4);
+                                hour = Regex.Match(hourBlock, "\"([^\\)]+)\"").ToString();
+                            }
                             hour = Regex.Replace(hour, "\"", "").ToString();
                             //Update counters
                             currentPosInString += hour.Length + 3; stringLeftToIndex -= hour.Length + 3;
