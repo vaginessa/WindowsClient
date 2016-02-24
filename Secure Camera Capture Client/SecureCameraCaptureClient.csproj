@@ -114,18 +114,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ajax-loader.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\loader_sm.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ajax-loader %281%29.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ajax-loader %282%29.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\loader.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

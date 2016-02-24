@@ -63,49 +63,9 @@ namespace Secure_Camera_Capture_Client.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ajax_loader {
-            get {
-                object obj = ResourceManager.GetObject("ajax-loader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ajax_loader__1_ {
-            get {
-                object obj = ResourceManager.GetObject("ajax-loader (1)", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ajax_loader__2_ {
-            get {
-                object obj = ResourceManager.GetObject("ajax-loader (2)", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap loader {
             get {
                 object obj = ResourceManager.GetObject("loader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap loader_sm {
-            get {
-                object obj = ResourceManager.GetObject("loader_sm", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
