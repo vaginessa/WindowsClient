@@ -16,15 +16,10 @@ namespace Secure_Camera_Capture_Client
         private JsonObject jO;
         private String currentImageName;
         private Image GlobalImage;
+        private bool TreeDrawn = false;
 
         public Form1()
         {
-            //DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-            //jsonSerializer.ReadObject(response.GetResponseStream());
-
-            //JSONParser jsp = new JSONParser("");
-            //jO = jsp.jO;
-
             InitializeComponent();
 
             treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
@@ -39,9 +34,6 @@ namespace Secure_Camera_Capture_Client
         public bool login(String username, String password)
         {
             //Start the login in script, getting all the data
-            //Console.WriteLine("U: " + username + " P: " + password);
-            //System.Threading.Thread.Sleep(1500);
-            return true;
             string URI = "http://139.78.71.59/login.php";
             string myParameters = "username=" + username + "&password=" + password;
 
@@ -64,9 +56,6 @@ namespace Secure_Camera_Capture_Client
 
         public bool registerAccount(String username, String password, String regNumber)
         {
-            //Console.WriteLine("U: " + username + " P: " + password + " R: " + regNumber);
-            //System.Threading.Thread.Sleep(1500);
-
             string URI = "http://139.78.71.59/login.php";
             string myParameters = "username=" + username + "&password=" + password + "&number=" + regNumber;
 
@@ -86,15 +75,15 @@ namespace Secure_Camera_Capture_Client
 
         public void getPicture(string pictureName)
         {
+            if (pictureName == "") return;
             string URI = "http://139.78.71.59/serve.php";
             string myParameters = "picture=" + pictureName;
-            var formTemp = this;
-            Form4 loading = new Form4();
+            //this.Enabled = false;
+            //this.SendToBack();
             Thread pictureThread = new Thread(() =>
-            {
-                formTemp.Enabled = false;
-                formTemp.SendToBack();
+            {   
                 Cursor.Current = Cursors.WaitCursor;
+                Form4 loading = new Form4();
                 loading.Show();                
                 using (WebClient wc = new WebClient())
                 {
@@ -102,21 +91,21 @@ namespace Secure_Camera_Capture_Client
                         wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
                         string HtmlResult = wc.UploadString(URI, myParameters);
                         Console.WriteLine(wc.ResponseHeaders);
+                        //Console.WriteLine(HtmlResult);
                         byte[] tempImg = Convert.FromBase64String(HtmlResult);
                         using (var ms = new MemoryStream(tempImg))
                         {
                             GlobalImage = Image.FromStream(ms);
-                            formTemp.Enabled = true;
-                            formTemp.BringToFront();
-                            Cursor.Current = Cursors.Default;
-                            loading.Close();
                         }
-                    } catch (Exception e)
+                    } catch
                     {
-                        formTemp.Enabled = true;
-                        formTemp.BringToFront();
+                        
+                    } finally
+                    {
                         Cursor.Current = Cursors.Default;
                         loading.Close();
+                        //this.Enabled = true;
+                        //this.BringToFront();
                     }
                 }
             });
@@ -198,49 +187,53 @@ namespace Secure_Camera_Capture_Client
 
 private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
-            int yearCount = jO.year.Count();
-            List<TreeNode> yearNodeList = new List<TreeNode>();
-            for (int i = 0; i < yearCount; i++)
+            if (!TreeDrawn)
             {
-                var year = jO.year.ElementAt(i);
-                int monthCount = year.months.Count();
-                List<TreeNode> monthNodeList = new List<TreeNode>();
-                for(int j = 0; j < monthCount; j++)
+                int yearCount = jO.year.Count();
+                List<TreeNode> yearNodeList = new List<TreeNode>();
+                for (int i = 0; i < yearCount; i++)
                 {
-                    var month = year.months.ElementAt(j);
-                    int dayCount = month.days.Count();
-                    List<TreeNode> dayNodeList = new List<TreeNode>();
-                    for ( int k = 0; k < dayCount; k++)
+                    var year = jO.year.ElementAt(i);
+                    int monthCount = year.months.Count();
+                    List<TreeNode> monthNodeList = new List<TreeNode>();
+                    for (int j = 0; j < monthCount; j++)
                     {
-                        var day = month.days.ElementAt(k);
-                        int hourCount = day.hours.Count();
-                        List<TreeNode> hourNodeList = new List<TreeNode>();
-                        for ( int l = 0; l < hourCount; l++)
+                        var month = year.months.ElementAt(j);
+                        int dayCount = month.days.Count();
+                        List<TreeNode> dayNodeList = new List<TreeNode>();
+                        for (int k = 0; k < dayCount; k++)
                         {
-                            var hour = day.hours.ElementAt(l);
-                            int imageCount = hour.images.Count();
-                            List<TreeNode> imageNodeList = new List<TreeNode>();
-                            for (int m = 0; m < imageCount; m++)
+                            var day = month.days.ElementAt(k);
+                            int hourCount = day.hours.Count();
+                            List<TreeNode> hourNodeList = new List<TreeNode>();
+                            for (int l = 0; l < hourCount; l++)
                             {
-                                TreeNode tn = new TreeNode(formatDateAndTime(hour.images.ElementAt(m).date_taken));
-                                tn.Tag = hour.images.ElementAt(m).file_name;
-                                imageNodeList.Add(tn);
+                                var hour = day.hours.ElementAt(l);
+                                int imageCount = hour.images.Count();
+                                List<TreeNode> imageNodeList = new List<TreeNode>();
+                                for (int m = 0; m < imageCount; m++)
+                                {
+                                    TreeNode tn = new TreeNode(formatDateAndTime(hour.images.ElementAt(m).date_taken));
+                                    tn.Tag = hour.images.ElementAt(m).file_name;
+                                    imageNodeList.Add(tn);
+                                }
+                                TreeNode h = new TreeNode(hour.hour.ToString(), imageNodeList.ToArray());
+                                hourNodeList.Add(h);
                             }
-                            TreeNode h = new TreeNode(hour.hour.ToString(), imageNodeList.ToArray());
-                            hourNodeList.Add(h);
+                            TreeNode d = new TreeNode(day.day_name.ToString(), hourNodeList.ToArray());
+                            dayNodeList.Add(d);
                         }
-                        TreeNode d = new TreeNode(day.day_name.ToString(), hourNodeList.ToArray());
-                        dayNodeList.Add(d);
+                        TreeNode mn = new TreeNode(getMonthString(month.month_name), dayNodeList.ToArray());
+                        monthNodeList.Add(mn);
                     }
-                    TreeNode mn = new TreeNode(getMonthString(month.month_name), dayNodeList.ToArray());
-                    monthNodeList.Add(mn);
+                    TreeNode y = new TreeNode(year.year_name.ToString(), monthNodeList.ToArray());
+                    yearNodeList.Add(y);
                 }
-                TreeNode y = new TreeNode(year.year_name.ToString(), monthNodeList.ToArray());
-                yearNodeList.Add(y);
-            }
-            for(int i = 0; i < yearNodeList.Count(); i++)
-            {
-                treeView1.Nodes.Add(yearNodeList.ElementAt(i));
+                for (int i = 0; i < yearNodeList.Count(); i++)
+                {
+                    treeView1.Nodes.Add(yearNodeList.ElementAt(i));
+                }
+                TreeDrawn = true;
             }
             /*
             //

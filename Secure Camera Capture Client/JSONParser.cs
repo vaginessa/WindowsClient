@@ -62,6 +62,8 @@ namespace Secure_Camera_Capture_Client
                     var monthBlock = jsonString.Substring(currentPosInString, 10);
                     month = Regex.Match(monthBlock, "\"([^\\)]+)\"").ToString();
                     month = Regex.Replace(month, "\"", "").ToString();
+                    month = Regex.Replace(month, ":", "").ToString();
+                    month = Regex.Replace(month, "{", "").ToString();
                     //Update counters
                     currentPosInString += month.Length + 2; stringLeftToIndex -= month.Length + 2;
 
