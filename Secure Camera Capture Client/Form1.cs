@@ -15,8 +15,11 @@ namespace Secure_Camera_Capture_Client
     {
         private JsonObject jO;
         private String currentImageName;
-        private Image GlobalImage;
         private bool TreeDrawn = false;
+        private Semaphore _picture;
+        private String G_URI;
+        private String G_myParameters;
+        private String mostRecentPictureName = "";
 
         public Form1()
         {
@@ -29,6 +32,7 @@ namespace Secure_Camera_Capture_Client
             this.TopLevel = false;
             subForm.TopMost = true;
             subForm.Show();
+            _picture = new Semaphore(0, 1);
         }
 
         public bool login(String username, String password)
@@ -36,7 +40,8 @@ namespace Secure_Camera_Capture_Client
             //Start the login in script, getting all the data
             string URI = "http://139.78.71.59/login.php";
             string myParameters = "username=" + username + "&password=" + password;
-
+            JSONParser jsp_1 = new JSONParser("");
+            jO = jsp_1.jO;
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -76,40 +81,88 @@ namespace Secure_Camera_Capture_Client
         public void getPicture(string pictureName)
         {
             if (pictureName == "") return;
+
             string URI = "http://139.78.71.59/serve.php";
             string myParameters = "picture=" + pictureName;
+            //Set Gloabls
+            G_URI = URI;
+            G_myParameters = myParameters;
+
             //this.Enabled = false;
             //this.SendToBack();
-            Thread pictureThread = new Thread(() =>
-            {   
-                Cursor.Current = Cursors.WaitCursor;
-                Form4 loading = new Form4();
-                loading.Show();                
-                using (WebClient wc = new WebClient())
+            if (pictureName != mostRecentPictureName)
+            {
+                Thread pictureThread = new Thread(new ParameterizedThreadStart(PictureWorker));
+                pictureThread.Start(0);
+                mostRecentPictureName = pictureName;
+                //The main thread was holding all these let them go free
+                _picture.Release(1);
+            }
+        }
+
+        void PictureWorker(Object num)
+        {
+            Console.WriteLine("Waiting for Pic");
+            try
+            {
+                Thread a = new Thread(() =>
                 {
                     try {
+                        Form4 loading = new Form4();
+                        loading.ShowDialog();
+                    } catch (System.Threading.ThreadAbortException IdontcareKillthisthread) {
+                           
+                    }
+                });
+                a.Start();
+                try {
+                    _picture.WaitOne();
+                } catch {
+                    return;
+                }
+                Cursor.Current = Cursors.WaitCursor;
+                Console.WriteLine("LOADING PIC!");
+                Thread.Sleep(1500);
+                a.Abort();
+                _picture.Release();
+                using (WebClient wc = new WebClient())
+                {
+                    try
+                    {
                         wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                        string HtmlResult = wc.UploadString(URI, myParameters);
+                        string HtmlResult = wc.UploadString(G_URI, G_myParameters);
                         Console.WriteLine(wc.ResponseHeaders);
                         //Console.WriteLine(HtmlResult);
                         byte[] tempImg = Convert.FromBase64String(HtmlResult);
                         using (var ms = new MemoryStream(tempImg))
                         {
-                            GlobalImage = Image.FromStream(ms);
+                            //GlobalImage = Image.FromStream(ms);
+                            insertImage(Image.FromStream(ms));
                         }
-                    } catch
+                    }
+                    catch
                     {
-                        
-                    } finally
+
+                    }
+                    finally
                     {
                         Cursor.Current = Cursors.Default;
-                        loading.Close();
+                        _picture.Release();
                         //this.Enabled = true;
                         //this.BringToFront();
                     }
                 }
-            });
-            pictureThread.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.Write("BOOOOOOM: ");
+                Console.WriteLine(ex);
+            }
+        }
+
+        void insertImage(Image image)
+        {
+            pictureBox1.Image = image;
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -141,12 +194,13 @@ namespace Secure_Camera_Capture_Client
                     //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
                     //Thread thread = new Thread(new ThreadStart(id => getPicture(imageName));
                     //thread.Start();
-                    GlobalImage = pictureBox1.Image;
+                    //GlobalImage = pictureBox1.Image;
                     getPicture(imageName);
                     
-                } catch
+                } catch ( Exception ex )
                 {
                     //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+                    Console.WriteLine(ex.ToString());
                 }
             }
             else

@@ -15,11 +15,11 @@ namespace Secure_Camera_Capture_Client
         public Form4()
         {
             InitializeComponent();
-            pictureBox1.Image = Properties.Resources.loader;
-            pictureBox1.Visible = true;
-            pictureBox1.BringToFront();
-            this.BringToFront();
-            this.Visible = true;
+            //pictureBox1.Image = Properties.Resources.loader;
+            //pictureBox1.Visible = true;
+            //pictureBox1.BringToFront();
+            //this.BringToFront();
+            //this.Visible = true;
         }
     }
 }
