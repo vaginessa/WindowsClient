@@ -102,42 +102,42 @@ namespace Secure_Camera_Capture_Client
 
         void PictureWorker(Object num)
         {
-            Console.WriteLine("Waiting for Pic");
+            Form4 loading = new Form4();
             try
             {
                 Thread a = new Thread(() =>
                 {
                     try {
-                        Form4 loading = new Form4();
                         loading.ShowDialog();
                     } catch (System.Threading.ThreadAbortException IdontcareKillthisthread) {
-                           
+                        loading.Close();       
+                    } finally
+                    {
+                        loading.Close();
                     }
                 });
                 a.Start();
                 try {
                     _picture.WaitOne();
-                } catch {
+                } catch (System.Threading.SemaphoreFullException ext) {
                     return;
                 }
-                Cursor.Current = Cursors.WaitCursor;
-                Console.WriteLine("LOADING PIC!");
-                Thread.Sleep(1500);
-                a.Abort();
-                _picture.Release();
+                Cursor.Current = Cursors.WaitCursor;               
                 using (WebClient wc = new WebClient())
                 {
                     try
                     {
                         wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
                         string HtmlResult = wc.UploadString(G_URI, G_myParameters);
-                        Console.WriteLine(wc.ResponseHeaders);
+                        //Console.WriteLine(wc.ResponseHeaders);
                         //Console.WriteLine(HtmlResult);
                         byte[] tempImg = Convert.FromBase64String(HtmlResult);
                         using (var ms = new MemoryStream(tempImg))
                         {
                             //GlobalImage = Image.FromStream(ms);
                             insertImage(Image.FromStream(ms));
+                            a.Abort();
+                            _picture.Release();
                         }
                     }
                     catch
@@ -148,15 +148,13 @@ namespace Secure_Camera_Capture_Client
                     {
                         Cursor.Current = Cursors.Default;
                         _picture.Release();
-                        //this.Enabled = true;
-                        //this.BringToFront();
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.Write("BOOOOOOM: ");
-                Console.WriteLine(ex);
+                //Console.Write("BOOOOOOM: ");
+                //Console.WriteLine(ex);
             }
         }
 

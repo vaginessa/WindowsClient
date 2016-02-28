@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,11 +39,10 @@
             this.downloadButton = new System.Windows.Forms.Button();
             this.leftButton = new System.Windows.Forms.Button();
             this.rightButton = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -67,6 +67,16 @@
             this.treeView1.Size = new System.Drawing.Size(287, 657);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(296, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(885, 615);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // menuStrip1
             // 
@@ -108,20 +118,20 @@
             this.tableLayoutPanel1.Controls.Add(this.leftButton, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.rightButton, 3, 0);
             this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(272, 659);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(296, 659);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(900, 34);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(876, 34);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // downloadButton
             // 
             this.downloadButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.downloadButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.downloadButton.Location = new System.Drawing.Point(413, 3);
+            this.downloadButton.Location = new System.Drawing.Point(389, 3);
             this.downloadButton.Name = "downloadButton";
             this.downloadButton.Size = new System.Drawing.Size(75, 27);
             this.downloadButton.TabIndex = 0;
@@ -133,9 +143,9 @@
             // 
             this.leftButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.leftButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.leftButton.Location = new System.Drawing.Point(334, 3);
+            this.leftButton.Location = new System.Drawing.Point(315, 3);
             this.leftButton.Name = "leftButton";
-            this.leftButton.Size = new System.Drawing.Size(73, 27);
+            this.leftButton.Size = new System.Drawing.Size(68, 27);
             this.leftButton.TabIndex = 1;
             this.leftButton.Text = "Left";
             this.leftButton.UseVisualStyleBackColor = true;
@@ -145,22 +155,12 @@
             // 
             this.rightButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.rightButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rightButton.Location = new System.Drawing.Point(494, 3);
+            this.rightButton.Location = new System.Drawing.Point(470, 3);
             this.rightButton.Name = "rightButton";
             this.rightButton.Size = new System.Drawing.Size(73, 27);
             this.rightButton.TabIndex = 2;
             this.rightButton.Text = "Right";
             this.rightButton.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(296, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(885, 615);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // Form1
             // 
@@ -181,10 +181,10 @@
             this.Text = "Secure Camera Capture Client";
             this.TransparencyKey = System.Drawing.Color.Black;
             this.flowLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
