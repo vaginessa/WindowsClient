@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -68,7 +69,7 @@ namespace Secure_Camera_Capture_Client
             //Start the login in script, getting all the data
             string URI = "http://" + GLOBALIPADDRESS + "/login.php";
             JSONParser jsp_1 = new JSONParser("");
-            jO = jsp_1.jO;
+            
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -76,10 +77,13 @@ namespace Secure_Camera_Capture_Client
                 Console.WriteLine(HtmlResult);
                 if (HtmlResult.Substring(0, 1) == "0")
                 {
-                    treeView1 = null;
+                    treeView1 = new TreeView();
+                    jO = null;
+                    jO = jsp_1.jO;
                     string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
                     JSONParser jsp = new JSONParser(jsonString);
                     jO = jsp.jO;
+                    TreeDrawn = false;
                     return true;
                 }
                 else
@@ -158,7 +162,6 @@ namespace Secure_Camera_Capture_Client
             //Set Gloabls
             G_URI = URI;
             G_myParameters = myParameters;
-            return;
             //this.Enabled = false;
             //this.SendToBack();
             if (pictureName != mostRecentPictureName)
@@ -359,30 +362,6 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
                 }
                 TreeDrawn = true;
             }
-            /*
-            //
-            // This is the first node in the view.
-            //
-            TreeNode treeNode = new TreeNode("2013");
-            treeView1.Nodes.Add(treeNode);
-            //
-            // Another node following the first node.
-            //
-            treeNode = new TreeNode("2014");
-            treeView1.Nodes.Add(treeNode);
-            //
-            // Create two child nodes and put them in an array.
-            // ... Add the third node, and specify these as its children.
-            //
-            TreeNode node2 = new TreeNode("January");
-            TreeNode node3 = new TreeNode("Febuary");
-            TreeNode[] array = new TreeNode[] { node2, node3 };
-            //
-            // Final node.
-            //
-            treeNode = new TreeNode("2015", array);
-            treeView1.Nodes.Add(treeNode);
-            */
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -524,24 +503,23 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
             if (currentImageName != "" && GlobalImage != null)
             {
-                Stream myStream;
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Title = "Save Downloaded Image";
+                sfd.Filter = "Image files (*.jpg)|*.jpg|All files (*.*)|*.*";
+                sfd.FilterIndex = 1;
+                sfd.RestoreDirectory = true;
+                //sfd.FileName = currentImageName;
+                sfd.FileName = Regex.Replace(currentImageName, @":+", "_").ToString();
+                ImageFormat format = ImageFormat.Jpeg;
 
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                Bitmap bp = new Bitmap(GlobalImage);
+                Graphics g = Graphics.FromImage(bp);
+                g.DrawImage(GlobalImage, new Point(0,0));
+                g.Dispose();     
 
-                saveFileDialog1.Title = "Save Downloaded Image";
-                saveFileDialog1.Filter = "Image files (*.jpg)|*.jpg|All files (*.*)|*.*";
-                saveFileDialog1.FilterIndex = 1;
-                saveFileDialog1.RestoreDirectory = true;
-                saveFileDialog1.FileName = currentImageName;
-
-                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    if ((myStream = saveFileDialog1.OpenFile()) != null)
-                    {
-                        // Code to write the stream goes here.
-                        GlobalImage.Save(myStream, ImageFormat.Jpeg);
-                        myStream.Close();
-                    }
+                    bp.Save(sfd.FileName, format);
                 }
             }
         }
