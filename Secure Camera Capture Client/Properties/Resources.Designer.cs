@@ -63,6 +63,66 @@ namespace Secure_Camera_Capture_Client.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ic_file_download_white_48dp_1x {
+            get {
+                object obj = ResourceManager.GetObject("ic_file_download_white_48dp_1x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_keyboard_arrow_left_white_48dp_1x {
+            get {
+                object obj = ResourceManager.GetObject("ic_keyboard_arrow_left_white_48dp_1x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_keyboard_arrow_left_white_48dp_2x {
+            get {
+                object obj = ResourceManager.GetObject("ic_keyboard_arrow_left_white_48dp_2x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_keyboard_arrow_right_white_48dp_1x {
+            get {
+                object obj = ResourceManager.GetObject("ic_keyboard_arrow_right_white_48dp_1x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_menu_white_48dp_1x {
+            get {
+                object obj = ResourceManager.GetObject("ic_menu_white_48dp_1x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_sync_white_48dp_1x {
+            get {
+                object obj = ResourceManager.GetObject("ic_sync_white_48dp_1x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap loader {
             get {
                 object obj = ResourceManager.GetObject("loader", resourceCulture);

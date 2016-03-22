@@ -34,7 +34,7 @@ namespace Secure_Camera_Capture_Client
 
                 Cursor.Current = Cursors.WaitCursor;
                 this.Enabled = false;
-                if ( mainForm.login(username, password))
+                if(mainForm.login(username, password))
                 {
 
                     Cursor.Current = Cursors.Default;

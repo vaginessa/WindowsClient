@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,28 +21,32 @@ namespace Secure_Camera_Capture_Client
         private String G_URI;
         private String G_myParameters;
         private String mostRecentPictureName = "";
+        private Image GlobalImage;
+        private TreeNode selectedNode;
+        private List<TreeNode> treeNodeList = new List<TreeNode>();
+        private string myLoginParameters;
+        private string GLOBALIPADDRESS;
 
         public Form1()
         {
             InitializeComponent();
+            GLOBALIPADDRESS = getIpFromFile(); //Also starts the other form:)
 
             treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
             treeView1.DrawNode += new DrawTreeNodeEventHandler(treeView1_DrawNode);
-
-            Form2 subForm = new Form2(this);
-            this.TopLevel = false;
-            subForm.TopMost = true;
-            subForm.Show();
+            
             _picture = new Semaphore(0, 1);
         }
 
         public bool login(String username, String password)
         {
             //Start the login in script, getting all the data
-            string URI = "http://139.78.71.59/login.php";
+            string URI = "http://" + GLOBALIPADDRESS + "/login.php";
             string myParameters = "username=" + username + "&password=" + password;
+            myLoginParameters = myParameters;
             JSONParser jsp_1 = new JSONParser("");
             jO = jsp_1.jO;
+            return true;
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -59,11 +64,35 @@ namespace Secure_Camera_Capture_Client
             }
         }
 
+        public bool loginRefresh()
+        {
+            //Start the login in script, getting all the data
+            string URI = "http://" + GLOBALIPADDRESS + "/login.php";
+            JSONParser jsp_1 = new JSONParser("");
+            jO = jsp_1.jO;
+            return true;
+            using (WebClient wc = new WebClient())
+            {
+                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                string HtmlResult = wc.UploadString(URI, myLoginParameters);
+                Console.WriteLine(HtmlResult);
+                if (HtmlResult.Substring(0, 1) == "0")
+                {
+                    treeView1 = null;
+                    string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
+                    JSONParser jsp = new JSONParser(jsonString);
+                    jO = jsp.jO;
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
+
         public bool registerAccount(String username, String password, String regNumber)
         {
-            string URI = "http://139.78.71.59/login.php";
+            string URI = "http://"+ GLOBALIPADDRESS+"/login.php";
             string myParameters = "username=" + username + "&password=" + password + "&number=" + regNumber;
-
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -78,16 +107,60 @@ namespace Secure_Camera_Capture_Client
             }
         }
 
+        private string getIpFromFile()
+        {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string iniFile = directory + "\\config.ini";
+            if(File.Exists(iniFile))
+            {
+                string configFile = System.IO.File.ReadAllText(iniFile);
+                string ip = Regex.Match(configFile, "(?=<ip>)(.*?)(?=</ip>)").ToString().Substring(4);
+
+                Form2 subForm = new Form2(this);
+                this.TopLevel = false;
+                subForm.TopMost = true;
+                subForm.Show();
+
+                return ip;
+
+
+            }
+            else
+            {
+                Form5 ipForm = new Form5(this, false);
+                this.TopLevel = false;
+                ipForm.TopMost = true;
+                ipForm.Show();
+                return "";
+            }
+        }
+
+        public void setIP(string IP, bool showLoginForm)
+        {
+            GLOBALIPADDRESS = IP;
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string iniFile = directory + "\\config.ini";
+            System.IO.File.WriteAllText(iniFile, "<ip>" + IP + "</ip>");
+
+            if (showLoginForm)
+            {
+                Form2 subForm = new Form2(this);
+                this.TopLevel = false;
+                subForm.TopMost = true;
+                subForm.Show();
+            }            
+        }
+
         public void getPicture(string pictureName)
         {
             if (pictureName == "") return;
 
-            string URI = "http://139.78.71.59/serve.php";
+            string URI = "http://" + GLOBALIPADDRESS + "/serve.php";
             string myParameters = "picture=" + pictureName;
             //Set Gloabls
             G_URI = URI;
             G_myParameters = myParameters;
-
+            return;
             //this.Enabled = false;
             //this.SendToBack();
             if (pictureName != mostRecentPictureName)
@@ -134,8 +207,8 @@ namespace Secure_Camera_Capture_Client
                         byte[] tempImg = Convert.FromBase64String(HtmlResult);
                         using (var ms = new MemoryStream(tempImg))
                         {
-                            //GlobalImage = Image.FromStream(ms);
-                            insertImage(Image.FromStream(ms));
+                            GlobalImage = Image.FromStream(ms);
+                            insertImage(GlobalImage);
                             a.Abort();
                             _picture.Release();
                         }
@@ -268,6 +341,7 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
                                     TreeNode tn = new TreeNode(formatDateAndTime(hour.images.ElementAt(m).date_taken));
                                     tn.Tag = hour.images.ElementAt(m).file_name;
                                     imageNodeList.Add(tn);
+                                    treeNodeList.Add(tn);
                                 }
                                 TreeNode h = new TreeNode(hour.hour.ToString(), imageNodeList.ToArray());
                                 hourNodeList.Add(h);
@@ -318,6 +392,7 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
             TreeView tv = (TreeView)sender;
             //tv.SelectedNode.BackColor = Color.DarkOrange;
             tv.HideSelection = false;
+            selectedNode = e.Node;
         }
 
         public string formatDateAndTime(string timeStamp)
@@ -381,30 +456,133 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
 
         }
 
-        private void button2_Click(object sender, System.EventArgs e)
+        private void navigateLeft()
         {
-
-        }
-
-        private void button1_Click(object sender, System.EventArgs e)
-        {
-            Stream myStream;
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
-            saveFileDialog1.Title = "Save Downloaded Image";
-            saveFileDialog1.Filter = "Image files (*.jpg)|*.jpg|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 1;
-            saveFileDialog1.RestoreDirectory = true;
-            saveFileDialog1.FileName = currentImageName;
-
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            //Left Button
+            //get index of current node
+            if (treeNodeList.Count > 0)
             {
-                if ((myStream = saveFileDialog1.OpenFile()) != null)
+                int index = 0;
+                for (int i = 0; i < treeNodeList.Count; i++)
                 {
-                    // Code to write the stream goes here.
-                    myStream.Close();
+                    if (selectedNode == treeNodeList[i])
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != 0)
+                {
+                    treeNodeList[index].Toggle();
+                    treeNodeList[index - 1].Toggle();
+                    treeView1.SelectedNode = treeNodeList[index - 1];
                 }
             }
+        }
+
+        private void navigateRight()
+        {
+            //Right button
+            //get index of current node
+            if (treeNodeList.Count > 0)
+            {
+                int index = 0;
+                for (int i = 0; i < treeNodeList.Count; i++)
+                {
+                    if (selectedNode == treeNodeList[i])
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != treeNodeList.Count - 1)
+                {
+                    treeNodeList[index].Toggle();
+                    treeNodeList[index + 1].Toggle();
+                    treeView1.SelectedNode = treeNodeList[index + 1];
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Left)
+            {
+                navigateLeft();
+                return true;
+            }
+            if (keyData == Keys.Right)
+            {
+                navigateRight();
+                return true;
+            }
+            // etc..
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            if (currentImageName != "" && GlobalImage != null)
+            {
+                Stream myStream;
+
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+                saveFileDialog1.Title = "Save Downloaded Image";
+                saveFileDialog1.Filter = "Image files (*.jpg)|*.jpg|All files (*.*)|*.*";
+                saveFileDialog1.FilterIndex = 1;
+                saveFileDialog1.RestoreDirectory = true;
+                saveFileDialog1.FileName = currentImageName;
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if ((myStream = saveFileDialog1.OpenFile()) != null)
+                    {
+                        // Code to write the stream goes here.
+                        GlobalImage.Save(myStream, ImageFormat.Jpeg);
+                        myStream.Close();
+                    }
+                }
+            }
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            navigateRight();
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            navigateLeft();
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            Cursor.Current = Cursors.WaitCursor;
+            this.Enabled = false;
+            if (loginRefresh())
+            {
+                Cursor.Current = Cursors.Default;
+                this.Enabled = true;
+            }
+            else
+            {
+                Cursor.Current = Cursors.Default;
+                //Handle the error
+                //TODO
+                this.Enabled = true;
+                MessageBox.Show("Unable to Refresh the List", "Refresh Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form5 ipForm = new Form5(this, true);
+            ipForm.Show();
         }
     }
 }
