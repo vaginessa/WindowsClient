@@ -46,7 +46,6 @@ namespace Secure_Camera_Capture_Client
             myLoginParameters = myParameters;
             JSONParser jsp_1 = new JSONParser("");
             jO = jsp_1.jO;
-            return true;
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -70,7 +69,6 @@ namespace Secure_Camera_Capture_Client
             string URI = "http://" + GLOBALIPADDRESS + "/login.php";
             JSONParser jsp_1 = new JSONParser("");
             jO = jsp_1.jO;
-            return true;
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";

@@ -15,10 +15,10 @@ namespace Secure_Camera_Capture_Client
 
         public JSONParser (String JSONfile)
         {
-            string directory =
-                        Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
-            string testString = System.IO.File.ReadAllText(directory + "\\testing.json");
-            //string testString = JSONfile;
+            //string directory =
+            //            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
+            //string testString = System.IO.File.ReadAllText(directory + "\\testing.json");
+            string testString = JSONfile;
             string jsonString = Regex.Replace(testString, @"\s+", "").ToString();
             //New JsonObject
             jO = new JsonObject();
