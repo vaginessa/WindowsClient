@@ -5,8 +5,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -42,11 +44,15 @@ namespace Secure_Camera_Capture_Client
         public bool login(String username, String password)
         {
             //Start the login in script, getting all the data
-            string URI = "http://" + GLOBALIPADDRESS + "/login.php";
+            string URI = "https://" + GLOBALIPADDRESS + "/login.php";
             string myParameters = "username=" + username + "&password=" + password;
             myLoginParameters = myParameters;
             JSONParser jsp_1 = new JSONParser("");
             jO = jsp_1.jO;
+
+            ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -67,9 +73,12 @@ namespace Secure_Camera_Capture_Client
         public bool loginRefresh()
         {
             //Start the login in script, getting all the data
-            string URI = "http://" + GLOBALIPADDRESS + "/login.php";
+            string URI = "https://" + GLOBALIPADDRESS + "/login.php";
             JSONParser jsp_1 = new JSONParser("");
-            
+
+            ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -93,8 +102,12 @@ namespace Secure_Camera_Capture_Client
 
         public bool registerAccount(String username, String password, String regNumber)
         {
-            string URI = "http://"+ GLOBALIPADDRESS+"/login.php";
+            string URI = "https://"+ GLOBALIPADDRESS+"/login.php";
             string myParameters = "username=" + username + "&password=" + password + "&number=" + regNumber;
+
+            ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+            
             using (WebClient wc = new WebClient())
             {
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -153,11 +166,26 @@ namespace Secure_Camera_Capture_Client
             }            
         }
 
+        private static bool ValidateRemoteCertificate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors error)
+        {
+            // If the certificate is a valid, signed certificate, return true.
+            if (error == System.Net.Security.SslPolicyErrors.None)
+            {
+                return true;
+            }
+
+            Console.WriteLine("X509Certificate [{0}] Policy Error: '{1}'",
+                cert.Subject,
+                error.ToString());
+
+            return true;
+        }
+
         public void getPicture(string pictureName)
         {
             if (pictureName == "") return;
 
-            string URI = "http://" + GLOBALIPADDRESS + "/serve.php";
+            string URI = "https://" + GLOBALIPADDRESS + "/serve.php";
             string myParameters = "picture=" + pictureName;
             //Set Gloabls
             G_URI = URI;
@@ -196,7 +224,11 @@ namespace Secure_Camera_Capture_Client
                 } catch (System.Threading.SemaphoreFullException ext) {
                     return;
                 }
-                Cursor.Current = Cursors.WaitCursor;               
+                Cursor.Current = Cursors.WaitCursor;
+
+                ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
                 using (WebClient wc = new WebClient())
                 {
                     try
