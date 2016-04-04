@@ -7,10 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Secure_Camera_Capture_Client
@@ -20,7 +18,6 @@ namespace Secure_Camera_Capture_Client
         private JsonObject jO;
         private String currentImageName;
         private bool TreeDrawn = false;
-        private Semaphore _picture;
         private String G_URI;
         private String G_myParameters;
         private String mostRecentPictureName = "";
@@ -38,7 +35,6 @@ namespace Secure_Camera_Capture_Client
             treeView1.DrawMode = TreeViewDrawMode.OwnerDrawText;
             treeView1.DrawNode += new DrawTreeNodeEventHandler(treeView1_DrawNode);
             
-            _picture = new Semaphore(0, 1);
         }
 
         public bool login(String username, String password)
@@ -166,7 +162,7 @@ namespace Secure_Camera_Capture_Client
             }            
         }
 
-        private static bool ValidateRemoteCertificate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors error)
+        public static bool ValidateRemoteCertificate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors error)
         {
             // If the certificate is a valid, signed certificate, return true.
             if (error == System.Net.Security.SslPolicyErrors.None)
@@ -190,83 +186,30 @@ namespace Secure_Camera_Capture_Client
             //Set Gloabls
             G_URI = URI;
             G_myParameters = myParameters;
-            //this.Enabled = false;
-            //this.SendToBack();
             if (pictureName != mostRecentPictureName)
             {
-                Thread pictureThread = new Thread(new ParameterizedThreadStart(PictureWorker));
-                pictureThread.Start(0);
                 mostRecentPictureName = pictureName;
-                //The main thread was holding all these let them go free
-                _picture.Release(1);
+                Form4 loading = new Form4(URI, myParameters, this);
+                loading.downloadPicture();
+                if (loading.ShowDialog(this) == DialogResult.OK)
+                {
+                    //do processing
+                    this.Enabled = true;                    
+                }
+                else
+                {
+                    //do processing
+                    MessageBox.Show("Unable to download picture", "Download Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Enabled = true;
+                }
             }
         }
 
-        void PictureWorker(Object num)
+        public void setImage(Image i)
         {
-            Form4 loading = new Form4();
-            try
-            {
-                Thread a = new Thread(() =>
-                {
-                    try {
-                        loading.ShowDialog();
-                    } catch (System.Threading.ThreadAbortException IdontcareKillthisthread) {
-                        loading.Close();       
-                    } finally
-                    {
-                        loading.Close();
-                    }
-                });
-                a.Start();
-                try {
-                    _picture.WaitOne();
-                } catch (System.Threading.SemaphoreFullException ext) {
-                    return;
-                }
-                Cursor.Current = Cursors.WaitCursor;
-
-                ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-
-                using (WebClient wc = new WebClient())
-                {
-                    try
-                    {
-                        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                        string HtmlResult = wc.UploadString(G_URI, G_myParameters);
-                        //Console.WriteLine(wc.ResponseHeaders);
-                        //Console.WriteLine(HtmlResult);
-                        byte[] tempImg = Convert.FromBase64String(HtmlResult);
-                        using (var ms = new MemoryStream(tempImg))
-                        {
-                            GlobalImage = Image.FromStream(ms);
-                            insertImage(GlobalImage);
-                            a.Abort();
-                            _picture.Release();
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                    finally
-                    {
-                        Cursor.Current = Cursors.Default;
-                        _picture.Release();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //Console.Write("BOOOOOOM: ");
-                //Console.WriteLine(ex);
-            }
-        }
-
-        void insertImage(Image image)
-        {
-            pictureBox1.Image = image;
+            GlobalImage = i;
+            pictureBox1.Image = GlobalImage;
         }
 
         void treeView1_DrawNode(object sender, DrawTreeNodeEventArgs e)
