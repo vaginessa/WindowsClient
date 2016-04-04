@@ -1,2 +1,2 @@
 # SecureCameraCaptureClient
-![alt tag](https://travis-ci.org/nathanlea/SecureCameraCaptureClient.svg?branch=master)
+![alt tag](https://api.travis-ci.org/SecureCameraCapture/WindowsClient.svg)
