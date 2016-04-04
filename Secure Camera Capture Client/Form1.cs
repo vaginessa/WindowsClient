@@ -182,7 +182,7 @@ namespace Secure_Camera_Capture_Client
             if (pictureName == "") return;
 
             string URI = "https://" + GLOBALIPADDRESS + "/serve.php";
-            string myParameters = "picture=" + pictureName;
+            string myParameters = "picture=" + pictureName  + "&type=1";
             //Set Gloabls
             G_URI = URI;
             G_myParameters = myParameters;
