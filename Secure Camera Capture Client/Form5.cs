@@ -50,7 +50,27 @@ namespace Secure_Camera_Capture_Client
                 }
 
                 this.mainForm.setIP(ipTextBox.Text, showLoginForm);
-                if(!showLoginForm) { mainForm.loginRefresh(); }
+
+                if( !showLoginForm )
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+                    mainForm.Enabled = false;
+                    byte ret = mainForm.loginRefresh();
+                    if (ret == 0)
+                    {
+                        Cursor.Current = Cursors.Default;
+                        mainForm.Enabled = true;
+                    }
+                    else if (ret == 1)
+                    {
+                        Cursor.Current = Cursors.Default;
+                        mainForm.Enabled = true;
+                        MessageBox.Show("Unable to Refresh with new IP", "Refresh Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    Cursor.Current = Cursors.Default;
+                    mainForm.Enabled = true;
+                }
                 this.Close();
             } 
             else

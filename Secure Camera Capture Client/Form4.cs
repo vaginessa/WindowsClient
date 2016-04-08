@@ -29,45 +29,43 @@ namespace Secure_Camera_Capture_Client
             gForm1.Enabled = false;
             Thread a = new Thread(() =>
             {
-
-                //TESTING
-                if (false)
+            ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+                try
                 {
-                    Thread.Sleep(5000);
+                    using (WebClient wc = new WebClient())
+                    {
+                        try
+                        {
+                            wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                            string HtmlResult = wc.UploadString(gURI, gMyParamters);
+                            byte[] tempImg = Convert.FromBase64String(HtmlResult);
+                            using (var ms = new MemoryStream(tempImg))
+                            {   
+                                gForm1.setImage(Image.FromStream(ms));
+                            }
+                            Cursor.Current = Cursors.Default;
+                            this.DialogResult = DialogResult.OK;
+                        }
+                        catch
+                        {
+                            Cursor.Current = Cursors.Default;
+                            this.DialogResult = DialogResult.Cancel;
+                        }
+                        finally
+                        {
+                            Cursor.Current = Cursors.Default;
+                        }
+                    }
                     Cursor.Current = Cursors.Default;
                     this.DialogResult = DialogResult.OK;
-                    return;
+
                 }
-
-                ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-
-                using (WebClient wc = new WebClient())
+                catch
                 {
-                    try
-                    {
-                        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                        string HtmlResult = wc.UploadString(gURI, gMyParamters);
-                        byte[] tempImg = Convert.FromBase64String(HtmlResult);
-                        using (var ms = new MemoryStream(tempImg))
-                        {
-                            gForm1.setImage(Image.FromStream(ms));
-                        }
-                        Cursor.Current = Cursors.Default;
-                        this.DialogResult = DialogResult.OK;
-                    }
-                    catch
-                    {
-                        Cursor.Current = Cursors.Default;
-                        this.DialogResult = DialogResult.Cancel;
-                    }
-                    finally
-                    {
-                        Cursor.Current = Cursors.Default;
-                    }
+                    MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                Cursor.Current = Cursors.Default;
-                this.DialogResult = DialogResult.OK;
             });
             a.Start();
         }
@@ -84,11 +82,13 @@ namespace Secure_Camera_Capture_Client
             {
                 return true;
             }
-
+#if DEBUG
             Console.WriteLine("X509Certificate [{0}] Policy Error: '{1}'",
                 cert.Subject,
                 error.ToString());
+#endif
             return true;
+
         }
     }
 }

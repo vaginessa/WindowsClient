@@ -37,36 +37,43 @@ namespace Secure_Camera_Capture_Client
             
         }
 
-        public bool login(String username, String password)
+        public byte login(String username, String password)
         {
             //Start the login in script, getting all the data
             string URI = "https://" + GLOBALIPADDRESS + "/login.php";
             string myParameters = "username=" + username + "&password=" + password;
             myLoginParameters = myParameters;
-            JSONParser jsp_1 = new JSONParser("");
-            jO = jsp_1.jO;
 
-            ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+            try {
+                ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
 
-            using (WebClient wc = new WebClient())
-            {
-                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                string HtmlResult = wc.UploadString(URI, myParameters);
-                Console.WriteLine(HtmlResult);
-                if (HtmlResult.Substring(0,1) == "0")
+                using (WebClient wc = new WebClient())
                 {
-                    string jsonString = HtmlResult.Substring(1, HtmlResult.Length-1);
-                    JSONParser jsp = new JSONParser(jsonString);
-                    jO = jsp.jO;
-                    return true;
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    string HtmlResult = wc.UploadString(URI, myParameters);
+#if DEBUG
+                    Console.WriteLine(HtmlResult);
+#endif
+                    if (HtmlResult.Substring(0, 1) == "0")
+                    {
+                        string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
+                        JSONParser jsp = new JSONParser(jsonString);
+                        jO = jsp.jO;
+                        return 0;
+                    }
+                    else
+                        return 1;
                 }
-                else
-                    return false;
+            } catch
+            {
+                MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 2;
             }
         }
 
-        public bool loginRefresh()
+        public byte loginRefresh()
         {
             //Start the login in script, getting all the data
             string URI = "https://" + GLOBALIPADDRESS + "/login.php";
@@ -74,47 +81,67 @@ namespace Secure_Camera_Capture_Client
 
             ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-
-            using (WebClient wc = new WebClient())
+            try
             {
-                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                string HtmlResult = wc.UploadString(URI, myLoginParameters);
-                Console.WriteLine(HtmlResult);
-                if (HtmlResult.Substring(0, 1) == "0")
+                using (WebClient wc = new WebClient())
                 {
-                    treeView1 = new TreeView();
-                    jO = null;
-                    jO = jsp_1.jO;
-                    string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
-                    JSONParser jsp = new JSONParser(jsonString);
-                    jO = jsp.jO;
-                    TreeDrawn = false;
-                    return true;
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    string HtmlResult = wc.UploadString(URI, myLoginParameters);
+#if DEBUG
+                    Console.WriteLine(HtmlResult);
+#endif
+                    if (HtmlResult.Substring(0, 1) == "0")
+                    {
+                        treeView1 = new TreeView();
+                        jO = null;
+                        jO = jsp_1.jO;
+                        string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
+                        JSONParser jsp = new JSONParser(jsonString);
+                        jO = jsp.jO;
+                        TreeDrawn = false;
+                        return 0;
+                    }
+                    else
+                        return 1;
                 }
-                else
-                    return false;
+            }
+            catch
+            {
+                MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 2;
             }
         }
 
-        public bool registerAccount(String username, String password, String regNumber)
+        public byte registerAccount(String username, String password, String regNumber)
         {
             string URI = "https://"+ GLOBALIPADDRESS+"/login.php";
             string myParameters = "username=" + username + "&password=" + password + "&number=" + regNumber;
 
             ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-            
-            using (WebClient wc = new WebClient())
+            try
             {
-                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                string HtmlResult = wc.UploadString(URI, myParameters);
-                Console.WriteLine(HtmlResult);
-                if (HtmlResult.Substring(0,1) == "0")
+                using (WebClient wc = new WebClient())
                 {
-                    return true;
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    string HtmlResult = wc.UploadString(URI, myParameters);
+#if DEBUG
+                    Console.WriteLine(HtmlResult);
+#endif
+                    if (HtmlResult.Substring(0, 1) == "0")
+                    {
+                        return 0;
+                    }
+                    else
+                        return 1;
                 }
-                else
-                    return false;
+            }
+            catch
+            {
+                MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 2;
             }
         }
 
@@ -133,8 +160,6 @@ namespace Secure_Camera_Capture_Client
                 subForm.Show();
 
                 return ip;
-
-
             }
             else
             {
@@ -169,11 +194,11 @@ namespace Secure_Camera_Capture_Client
             {
                 return true;
             }
-
+#if DEBUG
             Console.WriteLine("X509Certificate [{0}] Policy Error: '{1}'",
                 cert.Subject,
                 error.ToString());
-
+#endif
             return true;
         }
 
@@ -236,18 +261,13 @@ namespace Secure_Camera_Capture_Client
                 currentImageName = Regex.Replace(currentImageName, @"\s+", "-").ToString();
                 try
                 {
-                    //string ImagesDirectory =
-                    //    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tmp");
-                    //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
-                    //Thread thread = new Thread(new ThreadStart(id => getPicture(imageName));
-                    //thread.Start();
-                    //GlobalImage = pictureBox1.Image;
                     getPicture(imageName);
                     
                 } catch ( Exception ex )
                 {
-                    //pictureBox1.Image = Image.FromFile(ImagesDirectory + "\\" + imageName);
+#if DEBUG
                     Console.WriteLine(ex.ToString());
+#endif
                 }
             }
             else
@@ -514,12 +534,13 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
 
             Cursor.Current = Cursors.WaitCursor;
             this.Enabled = false;
-            if (loginRefresh())
+            byte ret = loginRefresh();
+            if (ret == 0)
             {
                 Cursor.Current = Cursors.Default;
                 this.Enabled = true;
             }
-            else
+            else if(ret == 1)
             {
                 Cursor.Current = Cursors.Default;
                 //Handle the error
@@ -528,6 +549,8 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
                 MessageBox.Show("Unable to Refresh the List", "Refresh Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            Cursor.Current = Cursors.Default;
+            this.Enabled = true;
         }
 
         private void fileToolStripMenuItem_Click(object sender, EventArgs e)

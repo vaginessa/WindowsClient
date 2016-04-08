@@ -35,14 +35,14 @@ namespace Secure_Camera_Capture_Client
 
                 Cursor.Current = Cursors.WaitCursor;
                 this.Enabled = false;
-                if(mainForm.login(username, password))
+                byte ret = mainForm.login(username, password);
+                if (ret==0)
                 {
-
                     Cursor.Current = Cursors.Default;
                     mainForm.TopLevel = true;
                     normalClose = true;
                     this.Close();
-                } else
+                } else if(ret == 0)
                 {
                     Cursor.Current = Cursors.Default;
                     //Handle the error
@@ -51,7 +51,8 @@ namespace Secure_Camera_Capture_Client
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Enabled = true;
                 }
-
+                Cursor.Current = Cursors.Default;
+                this.Enabled = true;
             }
         }
 

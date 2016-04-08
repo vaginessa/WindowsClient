@@ -52,18 +52,21 @@ namespace Secure_Camera_Capture_Client
 
                 Cursor.Current = Cursors.WaitCursor;
                 this.Enabled = false;
-                if (mainForm.registerAccount("user", "password", regNumber))
+                byte ret = mainForm.registerAccount("user", "password", regNumber);
+                if (ret == 0)
                 {
-                    if (mainForm.registerAccount(username, password, regNumber))
+                    ret = mainForm.registerAccount(username, password, regNumber);
+                    if (ret == 0)
                     {
-                        if (mainForm.login(username, password))
+                        ret = mainForm.login(username, password);
+                        if (ret == 0)
                         {
                             Cursor.Current = Cursors.Default;
                             mainForm.TopLevel = true;
                             normalClose = true;
                             this.Close();
                         }
-                        else
+                        else if(ret == 1)
                         {
                             Cursor.Current = Cursors.Default;
                             //Error, loging in the second time
@@ -72,7 +75,7 @@ namespace Secure_Camera_Capture_Client
                             this.Enabled = true;
                         }
                     }
-                    else
+                    else if(ret == 1)
                     {
                         Cursor.Current = Cursors.Default;
                         //Error, loging in the second time
@@ -81,7 +84,7 @@ namespace Secure_Camera_Capture_Client
                         this.Enabled = true;
                     }
                 }
-                else
+                else if(ret == 1)
                 {
                     Cursor.Current = Cursors.Default;
                     //Error, registering accound.
@@ -91,6 +94,12 @@ namespace Secure_Camera_Capture_Client
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Enabled = true;
                 }
+                Cursor.Current = Cursors.Default;
+                this.Enabled = true;
+            } else
+            {
+                MessageBox.Show("Please Enter a Valid Username, Password, and Registration Number", "Not Valid Information",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         protected override void OnFormClosing(FormClosingEventArgs e)

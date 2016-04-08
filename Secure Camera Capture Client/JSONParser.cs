@@ -115,7 +115,6 @@ namespace Secure_Camera_Capture_Client
                             int i = currentPosInString;
                             while(stringLeftToIndex > 0)
                             {
-                                //Console.WriteLine(jsonString.ElementAt(i));
                                 if (jsonString.ElementAt(i) == ']')
                                 {
                                     break;
