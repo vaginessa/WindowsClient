@@ -22,6 +22,7 @@ namespace Secure_Camera_Capture_Client
         private String G_myParameters;
         private String mostRecentPictureName = "";
         private Image GlobalImage;
+        private String GlobalKey;
         private TreeNode selectedNode;
         private List<TreeNode> treeNodeList = new List<TreeNode>();
         private string myLoginParameters;
@@ -57,7 +58,8 @@ namespace Secure_Camera_Capture_Client
 #endif
                     if (HtmlResult.Substring(0, 1) == "0")
                     {
-                        string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
+                        GlobalKey = HtmlResult.Substring(1, HtmlResult.Length - 1).Split(',')[0];
+                        string jsonString = HtmlResult.Substring(GlobalKey.Length+2);// HtmlResult.Substring(1, HtmlResult.Length - 1);
                         JSONParser jsp = new JSONParser(jsonString);
                         jO = jsp.jO;
                         return 0;
@@ -75,6 +77,7 @@ namespace Secure_Camera_Capture_Client
 
         public byte loginRefresh()
         {
+            logout();
             //Start the login in script, getting all the data
             string URI = "https://" + GLOBALIPADDRESS + "/login.php";
             JSONParser jsp_1 = new JSONParser("");
@@ -95,7 +98,8 @@ namespace Secure_Camera_Capture_Client
                         treeView1 = new TreeView();
                         jO = null;
                         jO = jsp_1.jO;
-                        string jsonString = HtmlResult.Substring(1, HtmlResult.Length - 1);
+                        GlobalKey = HtmlResult.Substring(1, HtmlResult.Length - 1).Split(',')[0];
+                        string jsonString = HtmlResult.Substring(GlobalKey.Length + 2);// HtmlResult.Substring(1, HtmlResult.Length - 1);
                         JSONParser jsp = new JSONParser(jsonString);
                         jO = jsp.jO;
                         TreeDrawn = false;
@@ -142,6 +146,44 @@ namespace Secure_Camera_Capture_Client
                 MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 2;
+            }
+        }
+
+        private Boolean logout( )
+        {
+            //Start the login in script, getting all the data
+            string URI = "https://" + GLOBALIPADDRESS + "/logout.php";
+            string myParameters = "key=" + GlobalKey;
+
+            try
+            {
+                ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+                using (WebClient wc = new WebClient())
+                {
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    string HtmlResult = wc.UploadString(URI, myParameters);
+#if DEBUG
+                    Console.WriteLine(HtmlResult);
+#endif
+                    if (HtmlResult.Substring(0, 1) == "0")
+                    {
+                        return false;
+                    }
+                    else
+                    {   
+                        MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return true;
+                    }
+                }
+            }
+            catch
+            {               
+                MessageBox.Show("Unable to connect to Remote Server", "Connection Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
             }
         }
 
@@ -207,7 +249,7 @@ namespace Secure_Camera_Capture_Client
             if (pictureName == "") return;
 
             string URI = "https://" + GLOBALIPADDRESS + "/serve.php";
-            string myParameters = "picture=" + pictureName  + "&type=1";
+            string myParameters = "picture=" + pictureName  + "&type=0" + "&key=" + GlobalKey;
             //Set Gloabls
             G_URI = URI;
             G_myParameters = myParameters;
@@ -518,6 +560,15 @@ private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
                 }
             }
         }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            if( logout() )
+            {
+                e.Cancel = true;
+            }
+    }
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
